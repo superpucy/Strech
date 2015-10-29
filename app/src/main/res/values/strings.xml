@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Strech</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_sport_main">SportMainActivity</string>
+    <string name="title_activity_streching">Streching</string>
+    <string name="title_activity_strech_gallery_activity2">StrechGalleryActivity2</string>
+    <string name="title_activity_strech_gallery">StrechGalleryActivity</string>
+
+</resources>
