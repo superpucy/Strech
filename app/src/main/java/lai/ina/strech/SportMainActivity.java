@@ -26,7 +26,12 @@ public class SportMainActivity extends Activity {
     private ImageView sportPicture;
     private TextView sportName;
     private TextView sportDesc;
+    private TextView allTime;
     private Button btnStart;
+
+
+    int changeSecond = 1;
+    int readySecond = 3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +39,7 @@ public class SportMainActivity extends Activity {
         sportPicture = (ImageView) findViewById(R.id.sportPicture);
         sportName = (TextView) findViewById(R.id.sprotName);
         sportDesc = (TextView) findViewById(R.id.sprotDesc);
+        allTime = (TextView) findViewById(R.id.allTime);
         btnStart = (Button) findViewById(R.id.btnStart);
 
 
@@ -52,13 +58,16 @@ public class SportMainActivity extends Activity {
 
         sterchListLayout = (LinearLayout)findViewById(R.id.strechListLayout);
 
+        int allsecond = 0;
 
-        final Cursor sportList = db.rawQuery("select b.picture, a.cycle, a.seconds from SportStrech a inner join Strech b on a.strech_id = b.id where a.sport_id = ? order by a.rank", new String[]{sport_id});
+
+        final Cursor sportList = db.rawQuery("select b.picture, a.cycle, a.seconds, b.is2Side from SportStrech a inner join Strech b on a.strech_id = b.id where a.sport_id = ? order by a.rank", new String[]{sport_id});
         int count = 0;
         sportList.moveToFirst();
 
         for(int i=0;i<sportList.getCount();i++)
         {
+            allsecond += readySecond;
             LinearLayout linearLayout = new LinearLayout(SportMainActivity.this);
             linearLayout.setOrientation(LinearLayout.HORIZONTAL);
             ImageView imageButton = new ImageView(SportMainActivity.this);
@@ -73,6 +82,27 @@ public class SportMainActivity extends Activity {
 
             linearLayout.addView(imageButton);
             linearLayout.addView(desc);
+
+            int is2Side = sportList.getInt(3);
+            for(int c=0;c<cycle;c++) {
+                if (is2Side == 1) {
+                    for (int s = seconds; s > 0; s--) {
+                        allsecond += 1;
+                    }
+                    allsecond += 1;
+                    allsecond += readySecond;
+
+                    for (int s = seconds; s > 0; s--) {
+                        allsecond += 1;
+                    }
+                } else {
+                    for (int s = seconds; s > 0; s--) {
+                        allsecond += 1;
+                    }
+                }
+            }
+
+
             sportList.moveToNext();
 
 
@@ -80,7 +110,7 @@ public class SportMainActivity extends Activity {
         }
         sportList.close();
         db.close();
-
+        allTime.setText(GetHHMMSS(allsecond));
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,6 +122,12 @@ public class SportMainActivity extends Activity {
         });
     }
 
+    private String GetHHMMSS(int second)
+    {
+        int mm = second/60;
+        int ss = second%60;
+        return mm + ":" + ss;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
