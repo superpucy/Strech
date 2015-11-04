@@ -75,14 +75,18 @@ public class StrechingActivity extends Activity {
         Resources res = this.getResources();
         sportList.moveToFirst();
         animation = new AnimationDrawable();
-        animation.addFrame(CountSecond("3"),1000);
-        animation.addFrame(CountSecond("2"),1000);
-        animation.addFrame(CountSecond("1"),1000);
         for(int i=0;i<sportList.getCount();i++) {
             countSecond = 0;
+
             final int cycle = sportList.getInt(0);
             int seconds = sportList.getInt(1);
             final int resStrechID = getResources().getIdentifier(sportList.getString(2), "drawable", getPackageName());
+
+
+            animation.addFrame(CountSecond(resStrechID,"3"), 1000);
+            animation.addFrame(CountSecond(resStrechID,"2"), 1000);
+            animation.addFrame(CountSecond(resStrechID,"1"), 1000);
+
             int is2Side = sportList.getInt(3);
             for(int c=0;c<cycle;c++)
             {
@@ -95,22 +99,20 @@ public class StrechingActivity extends Activity {
                         animation.addFrame(DoingSecond(resStrechID, c, ss), 1000);
                     }
                     // animation.addFrame(res.getDrawable(resStrechID),seconds*1000);
-
+                    final int resStrechIDL = getResources().getIdentifier(sportList.getString(2)+"_l", "drawable", getPackageName());
                     animation.addFrame(ChangeSide(),1000);
-                    animation.addFrame(CountSecond("3"),1000);
-                    animation.addFrame(CountSecond("2"),1000);
-                    animation.addFrame(CountSecond("1"),1000);
+                    animation.addFrame(CountSecond(resStrechIDL,"3"), 1000);
+                    animation.addFrame(CountSecond(resStrechIDL,"2"), 1000);
+                    animation.addFrame(CountSecond(resStrechIDL,"1"), 1000);
+
                     for(int s=seconds;s>0;s--)
                     {
-                        final int resStrechIDL = getResources().getIdentifier(sportList.getString(2)+"_l", "drawable", getPackageName());
+
                         String ss = String.valueOf(s);
                         //res.getDrawable(resStrechID).draw(DoingSecondCanvas(resStrechID,c,ss));
                         animation.addFrame(DoingSecond(resStrechIDL, c, ss), 1000);
                     }
                     // animation.addFrame(res.getDrawable(resStrechID),seconds*1000);
-                    animation.addFrame(CountSecond("3"),1000);
-                    animation.addFrame(CountSecond("2"),1000);
-                    animation.addFrame(CountSecond("1"),1000);
                 }else {
                     for (int s = seconds; s > 0; s--) {
                         String ss = String.valueOf(s);
@@ -119,9 +121,6 @@ public class StrechingActivity extends Activity {
                         animation.addFrame(DoingSecond(resStrechID, c, ss), 1000);
                     }
                     // animation.addFrame(res.getDrawable(resStrechID),seconds*1000);
-                    animation.addFrame(CountSecond("3"), 1000);
-                    animation.addFrame(CountSecond("2"), 1000);
-                    animation.addFrame(CountSecond("1"), 1000);
                 }
             }
             sportList.moveToNext();
@@ -177,7 +176,7 @@ public class StrechingActivity extends Activity {
      * @param seconde
      * @return
      */
-    public Drawable CountSecond(final String seconde){
+    public Drawable CountSecond( final String seconde){
 
         Drawable d = new Drawable() {
             @Override
@@ -203,6 +202,55 @@ public class StrechingActivity extends Activity {
                 circle.addCircle(center_x, center_y, radius, Path.Direction.CW);
                 canvas.drawPath(circle, cPaint);
                 canvas.drawText(seconde,center_x,center_y,tPaint);
+            }
+
+            @Override
+            public void setAlpha(int i) {
+
+            }
+
+            @Override
+            public void setColorFilter(ColorFilter colorFilter) {
+
+            }
+
+            @Override
+            public int getOpacity() {
+                return 0;
+            }
+        };
+        return d;
+    }
+
+    public Drawable CountSecond(final int resID, final String seconde){
+
+        Drawable d = new Drawable() {
+            @Override
+            public void draw(Canvas canvas) {
+                Resources res = getResources();
+                Bitmap bitmap = BitmapFactory.decodeResource(res, resID);
+                final Rect rect = new Rect(0, 0, canvas.getWidth(), canvas.getHeight());
+                canvas.drawBitmap(bitmap,rect,rect,new Paint());
+
+//                String sCycle = "第" + cycle + "次：倒數";
+//                Paint cyPaint = new Paint();
+//                cyPaint.setColor(Color.BLACK);
+//                canvas.drawText(sCycle,0,0,cyPaint);
+                int width = 80;
+                int height = 80;
+                int radius = width > height ? height/2 : width/2;
+                int center_x = width/2;
+                int center_y = height/2;
+
+                Path circle = new Path();
+                Paint cPaint = new Paint();
+                cPaint.setColor(Color.BLACK);
+                Paint tPaint = new Paint();
+                tPaint.setColor(Color.WHITE);
+                tPaint.setTextSize(40);
+                circle.addCircle(center_x, center_y, radius, Path.Direction.CW);
+                canvas.drawPath(circle, cPaint);
+                canvas.drawText(seconde,center_x-10,center_y+10,tPaint);
             }
 
             @Override
